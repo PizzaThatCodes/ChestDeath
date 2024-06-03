@@ -4,13 +4,10 @@ package me.pizzalover.chestdeath.database;
 import me.pizzalover.chestdeath.Main;
 import me.pizzalover.chestdeath.database.model.chestDataModel;
 import me.pizzalover.chestdeath.utils.utils;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 
 public class database {
@@ -20,7 +17,6 @@ public class database {
     /**
      * Get a connection to a database
      * @return the connection
-     * @throws SQLException
      */
     public Connection getConnection() {
         try {
@@ -103,23 +99,6 @@ public class database {
             Main.getInstance().getLogger().info("Cannot create player data, maybe the configuration is wrong");
         }
     }
-        public void updatePlayerData(chestDataModel chestData) {
-            try {
-                String items = "";
-                for(ItemStack item : chestData.getChestItems()) {
-                    items += utils.encodeItem(item) + "[-__-]";
-                }
-                PreparedStatement statement = getConnection().prepareStatement("UPDATE chest_data SET uuid = ?, items = ? WHERE id = ?");
-                statement.setString(1, String.valueOf(chestData.getUuid()));
-                statement.setString(2, items);
-                statement.setString(3, chestData.getId());
-
-                statement.executeUpdate();
-                statement.close();
-            } catch (SQLException e) {
-                Main.getInstance().getLogger().info("Cannot update player data, maybe the configuration is wrong");
-            }
-        }
 
         public void deleteInformation(chestDataModel chestData) {
             try {
@@ -163,30 +142,6 @@ public class database {
                 statement.close();
 
                 return null;
-            } catch (SQLException e) {
-                return null;
-            }
-        }
-
-        public ArrayList<chestDataModel> getAllItems() {
-            try {
-                ArrayList<chestDataModel> chestData = new ArrayList<>();
-                PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM chest_data");
-                ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    String[] items = resultSet.getString("items").split("[-__-]");
-                    ArrayList<ItemStack> itemStacks = new ArrayList<>();
-                    for(String item : items) {
-                        itemStacks.add(utils.decodeItem(item));
-                    }
-                    chestData.add(new chestDataModel(
-                            UUID.fromString(resultSet.getString("uuid")),
-                            resultSet.getString("id"),
-                            itemStacks.toArray(new ItemStack[itemStacks.size()])
-                    ));
-                }
-                statement.close();
-                return chestData;
             } catch (SQLException e) {
                 return null;
             }

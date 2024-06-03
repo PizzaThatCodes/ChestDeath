@@ -6,7 +6,7 @@ import me.pizzalover.chestdeath.listener.onRedeem;
 import me.pizzalover.chestdeath.utils.configManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 public final class Main extends JavaPlugin {
 
@@ -40,14 +40,6 @@ public final class Main extends JavaPlugin {
     }
 
     /**
-     * Get the config configuration
-     * @return the config configuration
-     */
-    public static configManager getConfigManager() {
-        return config;
-    }
-
-    /**
      * Get the database
      * @return the database
      */
@@ -78,11 +70,11 @@ public final class Main extends JavaPlugin {
             saveResource("config.yml", false);
         }
 
-        messages.updateConfig(Arrays.asList());
+        messages.updateConfig(Collections.emptyList());
         messages.saveConfig();
         messages.reloadConfig();
 
-        config.updateConfig(Arrays.asList());
+        config.updateConfig(Collections.emptyList());
         config.saveConfig();
         config.reloadConfig();
 

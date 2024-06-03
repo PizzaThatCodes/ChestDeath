@@ -5,23 +5,11 @@ import me.pizzalover.chestdeath.Main;
 import me.pizzalover.chestdeath.database.model.chestDataModel;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.io.BukkitObjectInputStream;
-import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,12 +19,11 @@ public class utils {
     /**
      * Translate a string with color codes to have colored text (hex supported)
      * @param message returns a colored string using & (hex supported)
-     * @return
      */
     public static String translate(String message) {
         // TODO: check if server version is 1.16 or above
         try {
-            Method method = Class.forName("net.md_5.bungee.api.ChatColor").getMethod("of", String.class);
+            Class.forName("net.md_5.bungee.api.ChatColor").getMethod("of", String.class);
             message = message.replaceAll("&#",  "#");
             Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
             Matcher matcher = pattern.matcher(message);
@@ -51,23 +38,6 @@ public class utils {
             return ChatColor.translateAlternateColorCodes('&', message);
         }
         return ChatColor.translateAlternateColorCodes('&', message);
-    }
-
-    /**
-     * Really janky setup to run a console command without it being logged into console
-     * @param command the command to run
-     * @param world the world to run the command in
-     */
-    public static void runConsoleCommand(String command, World world) {
-        boolean commandFeedback = world.getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK);
-        boolean commandBlock = world.getGameRuleValue(GameRule.COMMAND_BLOCK_OUTPUT);
-        world.setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
-        world.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false);
-        Entity entity = world.spawnEntity(new Location(world, 0, -320, 0), EntityType.COMMAND_BLOCK_MINECART);
-        Main.getInstance().getServer().dispatchCommand(entity, command);
-        world.setGameRule(GameRule.SEND_COMMAND_FEEDBACK, commandFeedback);
-        world.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, commandBlock);
-        entity.remove();
     }
 
     /**
@@ -106,6 +76,7 @@ public class utils {
         OfflinePlayer player = Bukkit.getOfflinePlayer(chestData.getUuid());
         ItemStack chest = new ItemStack(Material.CHEST, 1);
         ItemMeta chestMeta = chest.getItemMeta();
+        assert chestMeta != null;
         chestMeta.setDisplayName(ChatColor.GOLD + player.getName() + "'s Death Chest");
 
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "death_chest_id");
@@ -131,9 +102,8 @@ public class utils {
                     (random.nextFloat() * (rightLimit - leftLimit + 1));
             buffer.append((char) randomLimitedInt);
         }
-        String generatedString = buffer.toString();
 
-        return generatedString;
+        return buffer.toString();
     }
 
 }

@@ -1,6 +1,5 @@
 package me.pizzalover.chestdeath.database.model;
 
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -45,29 +44,5 @@ public class chestDataModel {
      */
     public ItemStack[] getChestItems() {
         return itemStacks;
-    }
-
-    /**
-     * Set the UUID of the player
-     * @param uuid the UUID of the player
-     */
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    /**
-     * Set the ID of the chest
-     * @param id the ID of the chest
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * Set the inventory of the chest
-     * @param itemStacks the inventory of the chest
-     */
-    public void setChestItems(ItemStack[] itemStacks) {
-        this.itemStacks = itemStacks;
     }
 }

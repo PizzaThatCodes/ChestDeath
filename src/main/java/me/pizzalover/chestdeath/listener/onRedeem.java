@@ -15,6 +15,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Objects;
+
 public class onRedeem implements Listener {
 
     @EventHandler
@@ -26,7 +28,7 @@ public class onRedeem implements Listener {
 
         Player player = event.getPlayer();
 
-        PersistentDataContainer container = event.getItem().getItemMeta().getPersistentDataContainer();
+        PersistentDataContainer container = Objects.requireNonNull(event.getItem().getItemMeta()).getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(Main.getInstance(), "death_chest_id");
 
         if(!container.has(key, PersistentDataType.STRING)) return;
@@ -49,9 +51,9 @@ public class onRedeem implements Listener {
 
         player.sendMessage(
                 utils.translate(
-                        Main.getMessageManager().getConfig().getString("redeem-message")
+                        Objects.requireNonNull(Main.getMessageManager().getConfig().getString("redeem-message"))
                                 .replace("%prefix%", Main.getPrefix())
-                                .replace("%player%", Bukkit.getOfflinePlayer(chestData.getUuid()).getName())
+                                .replace("%player%", Objects.requireNonNull(Bukkit.getOfflinePlayer(chestData.getUuid()).getName()))
                 ));
 
         Main.getDatabase().deleteInformation(chestData);
