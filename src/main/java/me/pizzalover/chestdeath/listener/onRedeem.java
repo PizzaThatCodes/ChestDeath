@@ -12,8 +12,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Objects;
 
@@ -28,12 +26,9 @@ public class onRedeem implements Listener {
 
         Player player = event.getPlayer();
 
-        PersistentDataContainer container = Objects.requireNonNull(event.getItem().getItemMeta()).getPersistentDataContainer();
-        NamespacedKey key = new NamespacedKey(Main.getInstance(), "death_chest_id");
+        if(utils.getDeathChestId(event.getItem()) == null) return;
 
-        if(!container.has(key, PersistentDataType.STRING)) return;
-
-        String id = container.get(key, PersistentDataType.STRING);
+        String id = utils.getDeathChestId(event.getItem());
 
         chestDataModel chestData = Main.getDatabase().findChestDataInformationByID(id);
         if(chestData == null) return;

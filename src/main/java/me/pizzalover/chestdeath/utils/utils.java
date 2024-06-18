@@ -7,9 +7,9 @@ import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +30,7 @@ public class utils {
 
             while (matcher.find()) {
                 String color = message.substring(matcher.start(), matcher.end());
-                message = message.replace(color, net.md_5.bungee.api.ChatColor.of(color) + "");
+                message = message.replace(color, net.md_5.bungee.api.ChatColor.valueOf(color) + "");
                 matcher = pattern.matcher(message);
             }
         } catch (Exception e) {
@@ -79,17 +79,50 @@ public class utils {
         assert chestMeta != null;
         chestMeta.setDisplayName(ChatColor.GOLD + player.getName() + "'s Death Chest");
 
-        NamespacedKey key = new NamespacedKey(Main.getInstance(), "death_chest_id");
-        chestMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, chestData.getId());
+        // Store the custom data in the lore
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.DARK_GRAY + "Death Chest ID: " + chestData.getId());
+        chestMeta.setLore(lore);
 
         chest.setItemMeta(chestMeta);
         return chest;
     }
 
     /**
-     * Generate a random code
-     * @return the random code
+     * Get the Death Chest ID from a chest item
+     * @param chest the chest item
+     * @return the Death Chest ID
      */
+    public static String getDeathChestId(ItemStack chest) {
+        if (chest == null || chest.getType() != Material.CHEST) {
+            return null;
+        }
+
+        ItemMeta chestMeta = chest.getItemMeta();
+        if (chestMeta == null || !chestMeta.hasLore()) {
+            return null;
+        }
+
+        List<String> lore = chestMeta.getLore();
+        if (lore == null || lore.isEmpty()) {
+            return null;
+        }
+
+        // Assuming the Death Chest ID is stored in the first line of the lore
+        String idLine = lore.get(0);
+        if (idLine.startsWith(ChatColor.DARK_GRAY + "Death Chest ID: ")) {
+            return idLine.substring((ChatColor.DARK_GRAY + "Death Chest ID: ").length());
+        }
+
+        return null;
+    }
+
+
+
+        /**
+         * Generate a random code
+         * @return the random code
+         */
     public static String generateCode() {
 
         int leftLimit = 97; // letter 'a'
