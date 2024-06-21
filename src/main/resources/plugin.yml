@@ -1,4 +1,4 @@
 name: ChestDeath
 version: '${project.version}'
 main: me.pizzalover.chestdeath.Main
-api-version: '1.20'
+api-version: '1.14'
